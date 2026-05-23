@@ -57,7 +57,7 @@ PRESETS = {
 with col_config1:
     preset = st.selectbox("Exemple prédéfini", [
         "Personnalisé",
-        "Série prof — Exo 7 (3×3)",
+        "Série TD — Exo 7 (3×3)",
         "Dilemme du prisonnier (2×2)",
         "Pierre Feuille Ciseaux (3×3)",
         "Coordination (2×2)",
