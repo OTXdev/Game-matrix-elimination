@@ -30,7 +30,7 @@ st.markdown('<div class="sec-label">00 — Configuration</div>', unsafe_allow_ht
 col_config1, col_config2 = st.columns([1, 1], gap="large")
 
 PRESETS = {
-    "Série TD— Exo 7 (3×3)": {
+    "Série TD — Exo 7 (3×3)": {
         "rows": ["A", "B", "C"], "cols": ["L", "M", "R"],
         "u1": "3,2,2\n5,1,2\n9,1,3",
         "u2": "5,0,2\n2,2,1\n0,5,2",
