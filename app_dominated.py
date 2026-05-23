@@ -17,7 +17,7 @@ st.set_page_config(
 st.markdown("""
 <div style="padding:2.5rem 0 2rem; border-bottom:1px solid #d4c9b8; margin-bottom:2rem;">
   <div class="page-title"> <h1> IESDS — <em>Domination Mixte</em> </h1> </div>
-  <div class="page-subtitle"> <h4> Realisé par Asma Otsmane et Emna Saci | Eliminate Framework </h4> </div>
+  <div class="page-subtitle"> <h4> Realisé par Asma Otsmane et Amina Saci | Eliminate Framework </h4> </div>
   <div class="page-subtitle">Élimination Itérative des Stratégies Strictement Dominées · Deux joueurs · Chacun maximise</div>
 
 
