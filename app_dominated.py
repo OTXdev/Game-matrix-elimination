@@ -55,7 +55,7 @@ PRESETS = {
 }
 
 with col_config1:
-    preset = st.selectbox("Exemple prédéfini", [
+    preset = st.selectbox("Choisissez un exemple prédéfini ou bien paramétrez votre propre jeu ! ", [
         "Personnalisé",
         "Série TD — Exo 7 (3×3)",
         "Dilemme du prisonnier (2×2)",
