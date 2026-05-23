@@ -16,14 +16,43 @@ st.set_page_config(
 
 st.markdown("""
 <div style="padding:2.5rem 0 2rem; border-bottom:1px solid #d4c9b8; margin-bottom:2rem;">
-  <div class="page-title">IESDS — <em>Domination Mixte</em></div>
+  <div class="page-title"> <h1> IESDS — <em>Domination Mixte</em> </h1> </div>
+  <div class="page-subtitle"> <h4> Realisé par Asma Otsmane et Emna Saci | Eliminate Framework </h4> </div>
   <div class="page-subtitle">Élimination Itérative des Stratégies Strictement Dominées · Deux joueurs · Chacun maximise</div>
+
+
+            
 </div>
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="sec-label">00 — Configuration</div>', unsafe_allow_html=True)
 
 col_config1, col_config2 = st.columns([1, 1], gap="large")
+
+PRESETS = {
+    "Série TD— Exo 7 (3×3)": {
+        "rows": ["A", "B", "C"], "cols": ["L", "M", "R"],
+        "u1": "3,2,2\n5,1,2\n9,1,3",
+        "u2": "5,0,2\n2,2,1\n0,5,2",
+    },
+    "Dilemme du prisonnier (2×2)": {
+        "rows": ["Avoue", "N'avoue pas"],
+        "cols": ["Avoue", "N'avoue pas"],
+        "u1": "-5,0\n-10,-1",
+        "u2": "-5,-10\n0,-1",
+    },
+    "Pierre Feuille Ciseaux (3×3)": {
+        "rows": ["Pierre", "Feuille", "Ciseaux"],
+        "cols": ["Pierre", "Feuille", "Ciseaux"],
+        "u1": "0,1,-1\n-1,0,1\n1,-1,0",
+        "u2": "0,-1,1\n1,0,-1\n-1,1,0",
+    },
+    "Coordination (2×2)": {
+        "rows": ["A", "B"], "cols": ["A", "B"],
+        "u1": "1,0\n0,1",
+        "u2": "1,0\n0,1",
+    },
+}
 
 with col_config1:
     preset = st.selectbox("Exemple prédéfini", [
@@ -34,31 +63,7 @@ with col_config1:
         "Coordination (2×2)",
     ])
 
-    PRESETS = {
-        "Série prof — Exo 7 (3×3)": {
-            "rows": ["A", "B", "C"], "cols": ["L", "M", "R"],
-            "u1": "3,2,2\n5,1,2\n9,1,3",
-            "u2": "5,0,2\n2,2,1\n0,5,2",
-        },
-        "Dilemme du prisonnier (2×2)": {
-            "rows": ["Avoue", "N'avoue pas"],
-            "cols": ["Avoue", "N'avoue pas"],
-            "u1": "-5,0\n-10,-1",
-            "u2": "-5,-10\n0,-1",
-        },
-        "Pierre Feuille Ciseaux (3×3)": {
-            "rows": ["Pierre", "Feuille", "Ciseaux"],
-            "cols": ["Pierre", "Feuille", "Ciseaux"],
-            "u1": "0,1,-1\n-1,0,1\n1,-1,0",
-            "u2": "0,-1,1\n1,0,-1\n-1,1,0",
-        },
-        "Coordination (2×2)": {
-            "rows": ["A", "B"], "cols": ["A", "B"],
-            "u1": "1,0\n0,1",
-            "u2": "1,0\n0,1",
-        },
-    }
-
+    # Use preset-specific defaults so sliders reset when preset changes
     if preset in PRESETS:
         p = PRESETS[preset]
         n_rows_def = len(p["rows"])
@@ -67,15 +72,18 @@ with col_config1:
         n_rows_def = 3
         n_cols_def = 3
 
-    n_rows = st.slider("Nombre de stratégies Joueur 1", 2, 6, n_rows_def)
-    n_cols = st.slider("Nombre de stratégies Joueur 2", 2, 6, n_cols_def)
+    # Include preset name in key so slider resets when preset changes
+    n_rows = st.slider("Nombre de stratégies Joueur 1", 2, 6, n_rows_def,
+                       key=f"nr_{preset}")
+    n_cols = st.slider("Nombre de stratégies Joueur 2", 2, 6, n_cols_def,
+                       key=f"nc_{preset}")
 
 with col_config2:
     st.markdown("**Noms des stratégies**")
-    
+
     if preset in PRESETS:
-        row_defaults = PRESETS[preset]["rows"][:n_rows]
-        col_defaults = PRESETS[preset]["cols"][:n_cols]
+        row_defaults = PRESETS[preset]["rows"]
+        col_defaults = PRESETS[preset]["cols"]
     else:
         row_defaults = [f"S{i+1}" for i in range(n_rows)]
         col_defaults = [f"T{j+1}" for j in range(n_cols)]
@@ -83,12 +91,15 @@ with col_config2:
     row_labels = []
     for i in range(n_rows):
         default = row_defaults[i] if i < len(row_defaults) else f"S{i+1}"
-        row_labels.append(st.text_input(f"Joueur 1 — Stratégie {i+1}", default, key=f"rl_{i}"))
+        # key includes preset so widgets refresh when preset changes
+        row_labels.append(st.text_input(f"Joueur 1 — Stratégie {i+1}", default,
+                                        key=f"rl_{preset}_{i}"))
 
     col_labels = []
     for j in range(n_cols):
         default = col_defaults[j] if j < len(col_defaults) else f"T{j+1}"
-        col_labels.append(st.text_input(f"Joueur 2 — Stratégie {j+1}", default, key=f"cl_{j}"))
+        col_labels.append(st.text_input(f"Joueur 2 — Stratégie {j+1}", default,
+                                        key=f"cl_{preset}_{j}"))
 
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -105,17 +116,20 @@ col_u1, col_u2 = st.columns(2, gap="large")
 with col_u1:
     st.markdown("**Gains Joueur 1 (u₁)**")
     default_u1 = PRESETS[preset]["u1"] if preset in PRESETS else \
-        "\n".join(",".join("0" * n_cols) for _ in range(n_rows))
+        "\n".join(",".join(["0"] * n_cols) for _ in range(n_rows))
+    # key includes preset so textarea resets when preset changes
     u1_text = st.text_area("u1 — une ligne par stratégie, valeurs séparées par virgule",
-                            value=default_u1, height=160, key="u1_area",
+                            value=default_u1, height=160,
+                            key=f"u1_area_{preset}",
                             label_visibility="collapsed")
 
 with col_u2:
     st.markdown("**Gains Joueur 2 (u₂)**")
     default_u2 = PRESETS[preset]["u2"] if preset in PRESETS else \
-        "\n".join(",".join("0" * n_cols) for _ in range(n_rows))
+        "\n".join(",".join(["0"] * n_cols) for _ in range(n_rows))
     u2_text = st.text_area("u2 — une ligne par stratégie, valeurs séparées par virgule",
-                            value=default_u2, height=160, key="u2_area",
+                            value=default_u2, height=160,
+                            key=f"u2_area_{preset}",
                             label_visibility="collapsed")
 
 def parse_matrix(text, n_rows, n_cols):
